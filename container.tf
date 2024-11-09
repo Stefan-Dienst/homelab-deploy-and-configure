@@ -9,7 +9,8 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
 
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = "192.168.178.51/24"    # Hardcoded static IP address
+        gateway = "192.168.178.1"        # Default gateway
       }
     }
 

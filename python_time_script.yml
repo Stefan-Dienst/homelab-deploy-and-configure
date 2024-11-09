@@ -1,0 +1,21 @@
+---
+- name: Run Python script to print current time
+  hosts: proxmox_container
+  gather_facts: no
+  tasks:
+  - name: Install python script in directory
+    copy:
+      src: ./print_time.py
+      dest: /usr/bin/print_time.py
+      mode: 0744
+  - name: Create systemd unit file
+    copy:
+      src: print_time.service
+      dest: /lib/systemd/system/print_time.service
+  - name: Reload the system configureation (registers new unit)
+    shell: systemctl daemon-reload
+  - name: Start python based service
+    systemd:
+      name: print_time.service
+      enabled: true
+      state: started
