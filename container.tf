@@ -33,11 +33,9 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
     type             = "ubuntu"
   }
 
-  mount_point {
-    # volume mount, a new volume will be created by PVE
-    volume = "local-lvm"
-    size   = "10G"
-    path   = "/mnt/volume"
+  disk {
+    datastore_id = "local"
+    size         = 4
   }
 
   startup {
