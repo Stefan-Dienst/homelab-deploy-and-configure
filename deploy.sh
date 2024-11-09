@@ -1,5 +1,6 @@
 #/bin/sh
-tofu apply
+tofu apply -auto-approve
 tofu output -raw ubuntu_container_private_key > ~/.ssh/ubuntu_container_key.pem
-chmod 600 ~/.ssh/ubuntu_container_key.pem
+chmod 600 $HOME/.ssh/ubuntu_container_key.pem
+sleep 30
 ansible-playbook -i inventory.ini python_time_script.yml
