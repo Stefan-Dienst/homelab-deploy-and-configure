@@ -1,0 +1,23 @@
+name: Test GitHub Actions Runner
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+
+jobs:
+  test-runner:
+    runs-on: self-hosted  # This tells GitHub to use your self-hosted runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Check out the code from the repository
+
+      - name: Run a simple shell script
+        run: |
+          echo "Hello, GitHub Actions Runner!"  # This is a simple test message
+          date  # Print the current date and time to verify the runner is working
+
+      - name: Verify runner info
+        run: |
+          echo "Runner info:"
+          uname -a  # Display information about the runner machine
