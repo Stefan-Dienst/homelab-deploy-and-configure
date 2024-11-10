@@ -1,0 +1,55 @@
+---
+- name: Install GitHub Actions Runner
+  hosts: forge
+  become: yes  # Elevate to root if needed
+  tasks:
+
+    - name: Create the actions-runner directory
+      file:
+        path: /home/forge/actions-runner
+        state: directory
+        mode: '0755'
+
+    - name: Download the GitHub Actions runner package
+      get_url:
+        url: https://github.com/actions/runner/releases/download/v2.320.0/actions-runner-linux-x64-2.320.0.tar.gz
+        dest: /home/forge/actions-runner/actions-runner-linux-x64-2.320.0.tar.gz
+        mode: '0644'
+
+    - name: Validate the SHA256 checksum of the downloaded file
+      shell: echo "93ac1b7ce743ee85b5d386f5c1787385ef07b3d7c728ff66ce0d3813d5f46900  /home/forge/actions-runner/actions-runner-linux-x64-2.320.0.tar.gz" | sha256sum -c -
+      args:
+        creates: /home/forge/actions-runner/actions-runner-linux-x64-2.320.0.tar.gz  # Skip task if file exists
+      register: checksum_result
+      failed_when: checksum_result.rc != 0  # Fail the task if the checksum doesn't match
+
+    - name: Extract the GitHub Actions runner tarball
+      unarchive:
+        src: /home/forge/actions-runner/actions-runner-linux-x64-2.320.0.tar.gz
+        dest: /home/forge/actions-runner/
+        remote_src: yes
+        mode: '0755'
+
+    - name: Ensure actions-runner directory has proper permissions
+      file:
+        path: /home/forge/actions-runner
+        owner: forge
+        group: forge
+        mode: '0755'
+
+    - name: Configure the GitHub Actions runner
+      become: no
+      shell: ./config.sh --url https://github.com/Stefan-Dienst/homelab-deploy-and-configure --token "{{ lookup('env', 'GITHUB_TOKEN') }}" --name "forge" --work _work --runnergroup "default" --unattended
+      args:
+        chdir: /home/forge/actions-runner  # Change to the actions-runner directory before running config.sh
+        creates: /home/forge/actions-runner/.runner  # Check if the runner is already configured (idempotence)
+      register: config_result
+      failed_when: config_result.rc != 0  # Fail if the configuration fails
+
+    - name: Run the GitHub Actions runner
+      become: no
+      shell: nohup ./run.sh &
+      args:
+        chdir: /home/forge/actions-runner  # Change to the actions-runner directory before running run.sh
+      register: run_result
+      failed_when: run_result.rc != 0  # Fail if the runner fails to start
