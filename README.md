@@ -8,3 +8,8 @@ Then follow those steps to setup the homelab:
     - `export PROXMOX_VE_PASSWORD="<your-password>"`
     - `export TF_VAR_proxmox_api_endpoint="<your-endpoint>"`
  2. Run `./deploy_and_configure.sh`
+
+## ToDo's
+ - [x] Auto generate inventory.ini for deployed container/vms.
+ - [ ] Structure /deploy directory in modules.
+ - [ ] fix bug in connection to nightcrawler
