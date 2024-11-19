@@ -1,4 +1,4 @@
-resource "proxmox_virtual_environment_container" "ubuntu_container" {
+resource "proxmox_virtual_environment_container" "nightcrawler" {
   description = "Managed by Terraform"
 
   node_name = "proxmox"
