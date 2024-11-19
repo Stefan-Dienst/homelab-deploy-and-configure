@@ -1,6 +1,6 @@
 ---
 - name: Run Python script to print current time
-  hosts: proxmox_container
+  hosts: nightcrawler
   gather_facts: no
   tasks:
   - name: Install python script in directory
