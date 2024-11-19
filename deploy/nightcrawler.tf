@@ -27,9 +27,7 @@ resource "proxmox_virtual_environment_container" "nightcrawler" {
   }
 
   operating_system {
-    template_file_id = proxmox_virtual_environment_download_file.latest_ubuntu_22_jammy_lxc_img.id
-    # Or you can use a volume ID, as obtained from a "pvesm list <storage>"
-    # template_file_id = "local:vztmpl/jammy-server-cloudimg-amd64.tar.gz"
+    template_file_id = proxmox_virtual_environment_download_file.latest_ubuntu_24_jammy_lxc_img.id
     type             = "ubuntu"
   }
 
@@ -43,13 +41,6 @@ resource "proxmox_virtual_environment_container" "nightcrawler" {
     up_delay   = "60"
     down_delay = "60"
   }
-}
-
-resource "proxmox_virtual_environment_download_file" "latest_ubuntu_22_jammy_lxc_img" {
-  content_type = "vztmpl"
-  datastore_id = "local"
-  node_name    = "proxmox"
-  url          = "http://download.proxmox.com/images/system/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
 }
 
 resource "random_password" "ubuntu_container_password" {
